@@ -43,8 +43,9 @@ export default function MessengerPage() {
             });
 
             if (response.ok) {
-                const data = await response.json();
-                if (data.content) {
+                const responseData = await response.json();
+                const data = Array.isArray(responseData) ? responseData[0] : responseData;
+                if (data && data.content) {
                     let processedContent = data.content.replace(/\\n/g, '\n');
                     processedContent = processedContent.replace(/\n{3,}/g, '\n\n');
                     const botResponse: Message = {
