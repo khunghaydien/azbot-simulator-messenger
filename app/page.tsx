@@ -48,14 +48,55 @@ export default function MessengerPage() {
                 if (data && data.content) {
                     let processedContent = data.content.replace(/\\n/g, '\n');
                     processedContent = processedContent.replace(/\n{3,}/g, '\n\n');
-                    const botResponse: Message = {
-                        id: Date.now().toString(),
-                        message: processedContent,
-                        type: "system",
-                        timestamp: new Date(),
-                        image_urls: data.attach_files || [],
-                    };
-                    setMessages(prev => [...prev, botResponse]);
+                    
+                    // Split message by periods and filter out empty sentences
+                    const sentences = processedContent.split('.').filter((sentence: { trim: () => { (): any; new(): any; length: number; }; }) => sentence.trim().length > 0);
+                    
+                    // Split images into chunks of max 10 images per message
+                    const images = data.attach_files || [];
+                    const imageChunks = [];
+                    for (let i = 0; i < images.length; i += 10) {
+                        imageChunks.push(images.slice(i, i + 10));
+                    }
+                    
+                    const newMessages: Message[] = [];
+                    let messageIndex = 0;
+                    
+                    // Create messages for sentences
+                    sentences.forEach((sentence: string, index: number) => {
+                        const trimmedSentence = sentence.trim();
+                        if (trimmedSentence) {
+                            const botResponse: Message = {
+                                id: `${Date.now()}-${messageIndex++}`,
+                                message: trimmedSentence + (index < sentences.length - 1 ? '.' : ''),
+                                type: "system",
+                                timestamp: new Date(),
+                                image_urls: [],
+                            };
+                            newMessages.push(botResponse);
+                        }
+                    });
+                    
+                    // Create messages for images
+                    imageChunks.forEach((imageChunk) => {
+                        if (imageChunk.length > 0) {
+                            const imageMessage: Message = {
+                                id: `${Date.now()}-${messageIndex++}`,
+                                message: '',
+                                type: "system",
+                                timestamp: new Date(),
+                                image_urls: imageChunk,
+                            };
+                            newMessages.push(imageMessage);
+                        }
+                    });
+                    
+                    // Add all messages with delay to simulate typing
+                    newMessages.forEach((message, index) => {
+                        setTimeout(() => {
+                            setMessages(prev => [...prev, message]);
+                        }, index * 500); // 500ms delay between messages
+                    });
                 }
             }
         } catch (error) {
