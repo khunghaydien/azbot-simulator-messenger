@@ -1,8 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-
-const webhookUrl = "https://n8n.aibus.dev/webhook/clone-test-model/0047a97b-8db7-4cf5-9dc5-83abc171e8ae"
 interface Message {
     id: string;
     message: string;
@@ -17,6 +15,8 @@ export default function MessengerPage() {
     const [inputText, setInputText] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const [productId, setProductId] = useState("beea1a20-e53d-4a22-bcb2-a22a4c084bd7");
+    const [webhookUrl, setWebhookUrl] = useState("https://n8n.aibus.dev/webhook/azbot-test-rag/0047a97b-8db7-4cf5-9dc5-83abc171e8ae");
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -38,9 +38,11 @@ export default function MessengerPage() {
                         message: msg.message,
                         type: msg.type,
                         image_urls: msg.image_urls
-                    }))
+                    })),
+                    product_id: productId
                 }),
             });
+
 
             if (response.ok) {
                 const responseData = await response.json();
@@ -48,20 +50,20 @@ export default function MessengerPage() {
                 if (data && data.content) {
                     let processedContent = data.content.replace(/\\n/g, '\n');
                     processedContent = processedContent.replace(/\n{3,}/g, '\n\n');
-                    
+
                     // Split message by periods and filter out empty sentences
                     const sentences = processedContent.split('.').filter((sentence: { trim: () => { (): any; new(): any; length: number; }; }) => sentence.trim().length > 0);
-                    
+
                     // Split images into chunks of max 10 images per message
                     const images = data.attach_files || [];
                     const imageChunks = [];
                     for (let i = 0; i < images.length; i += 10) {
                         imageChunks.push(images.slice(i, i + 10));
                     }
-                    
+
                     const newMessages: Message[] = [];
                     let messageIndex = 0;
-                    
+
                     // Create messages for sentences
                     sentences.forEach((sentence: string, index: number) => {
                         const trimmedSentence = sentence.trim();
@@ -76,7 +78,7 @@ export default function MessengerPage() {
                             newMessages.push(botResponse);
                         }
                     });
-                    
+
                     // Create messages for images
                     imageChunks.forEach((imageChunk) => {
                         if (imageChunk.length > 0) {
@@ -90,7 +92,7 @@ export default function MessengerPage() {
                             newMessages.push(imageMessage);
                         }
                     });
-                    
+
                     // Add all messages with delay to simulate typing
                     newMessages.forEach((message, index) => {
                         setTimeout(() => {
@@ -138,14 +140,24 @@ export default function MessengerPage() {
     return (
         <div className="flex flex-col h-screen bg-gray-50">
             {/* Header */}
-            <div className="bg-white border-b border-gray-200 px-4 py-3 shadow-sm">
-                <div className="flex items-center gap-3">
+            <div className="bg-white border-b border-gray-200 px-4 py-3 shadow-sm flex justify-between items-center">
+                <div className="flex items-center gap-3 w-full">
                     <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
                         <span className="text-white font-bold text-sm">AZ</span>
                     </div>
                     <div className="flex-1">
                         <h1 className="font-semibold text-base">AZbot Support</h1>
                         <p className="text-xs text-green-500 font-medium">● Online</p>
+                    </div>
+                </div>
+                <div className="flex flex-col items-end justify-end gap-2 w-full">
+                    <div className="flex gap-1 w-full items-center">
+                        <label className="text-xs text-gray-500 w-[100px]">Product ID</label>
+                        <input type="text" value={productId} onChange={(e) => setProductId(e.target.value)} className="w-full border border-gray-200 rounded-md p-2" />
+                    </div>
+                    <div className="flex gap-1 w-full items-center">
+                        <label className="text-xs text-gray-500 w-[100px]">Webhook URL</label>
+                        <input type="text" value={webhookUrl} onChange={(e) => setWebhookUrl(e.target.value)} className="w-full border border-gray-200 rounded-md p-2" />
                     </div>
                 </div>
             </div>
