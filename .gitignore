@@ -1,3 +1,55 @@
+# Node.js dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build output
+dist/
+build/
+.out/
+.next/
+.vscode/
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Environment variables
 .env
-node_modules
-.next
+.env.local
+.env.*.local
+
+# Editor settings
+.idea/
+*.swp
+*.swo
+*.swn
+*.bak
+
+# Coverage reports
+coverage/
+
+# Cache files
+.cache/
+*.cache
+*.lock
+*.tmp
+
+# Generated files
+*.map
+*.gz
+*.zip
+*.tar
+*.tgz
+
+# Miscellaneous
+*.iml
+*.sublime-workspace
+*.sublime-project

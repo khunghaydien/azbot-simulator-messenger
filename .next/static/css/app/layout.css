@@ -609,9 +609,6 @@ video {
 .w-full {
   width: 100%;
 }
-.w-\[200px\] {
-  width: 200px;
-}
 .max-w-\[80\%\] {
   max-width: 80%;
 }
@@ -663,14 +660,14 @@ video {
 .justify-between {
   justify-content: space-between;
 }
+.gap-1 {
+  gap: 0.25rem;
+}
 .gap-2 {
   gap: 0.5rem;
 }
 .gap-3 {
   gap: 0.75rem;
-}
-.gap-1 {
-  gap: 0.25rem;
 }
 .space-x-1 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-x-reverse: 0;
@@ -736,11 +733,11 @@ video {
 .object-cover {
   object-fit: cover;
 }
-.p-4 {
-  padding: 1rem;
-}
 .p-2 {
   padding: 0.5rem;
+}
+.p-4 {
+  padding: 1rem;
 }
 .px-4 {
   padding-left: 1rem;
